@@ -12,11 +12,20 @@ mongoose
     console.log("Connected to database");
   })
   .catch((err) => {
-    console.error("Failed to connect to database");
+    console.error("Failed to connect to database:", err);
   });
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");
+});
+
+app.use(express.json());
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: "66c67ae132de209311bbe4e8",
+  };
+  next();
 });
 
 app.use("/", mainRouter);
