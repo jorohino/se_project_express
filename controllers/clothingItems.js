@@ -23,7 +23,7 @@ const createClothingItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT)
@@ -40,10 +40,10 @@ const deleteClothingItem = (req, res) => {
     .then((item) => res.send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Document not found" });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT)
@@ -64,10 +64,10 @@ const likeItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Document not found" });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT)
@@ -86,10 +86,10 @@ const dislikeItem = (req, res) => {
     .then((item) => res.send({ item }))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Document not found" });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT)
