@@ -4,8 +4,10 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   CONFLICT,
+  UNAUTHORIZED,
 } = require("../utils/errors");
 const bcrypt = require("bcryptjs");
+const JWT_SECRET = require("../utils/config");
 
 // Return all users
 const getUsers = (req, res) => {
@@ -65,4 +67,29 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+const login = (req, res) => {
+  const jwt = require("jsonwebtoken");
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      res.send({
+        token: jwt.sign(
+          {
+            _id: user._id,
+          },
+          JWT_SECRET,
+          {
+            expiresIn: "7d",
+          }
+        ),
+      });
+    })
+    .catch((err) => {
+      res
+        .status(UNAUTHORIZED)
+        .send({ message: "Incorrect password or email." });
+    });
+};
+
+module.exports = { getUsers, createUser, getUser, login };
