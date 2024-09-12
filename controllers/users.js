@@ -1,5 +1,11 @@
 const User = require("../models/user");
-const { DEFAULT, BAD_REQUEST, NOT_FOUND } = require("../utils/errors");
+const {
+  DEFAULT,
+  BAD_REQUEST,
+  NOT_FOUND,
+  CONFLICT,
+} = require("../utils/errors");
+const bcrypt = require("bcryptjs");
 
 // Return all users
 const getUsers = (req, res) => {
@@ -15,14 +21,23 @@ const getUsers = (req, res) => {
 
 // Create a new user
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        return res.status(CONFLICT).send({ message: "Email already in use." });
+      }
+      return bcrypt.hash(password, 10);
+    })
+    .then((hash) => {
+      return User.create({ name, avatar, email, password: hash });
+    })
     .then((user) => res.send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data." });
       }
       return res
         .status(DEFAULT)
@@ -39,10 +54,10 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "User not found" });
+        return res.status(NOT_FOUND).send({ message: "User not found." });
       }
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid data." });
       }
       return res
         .status(DEFAULT)
