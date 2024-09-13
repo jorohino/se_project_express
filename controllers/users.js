@@ -91,6 +91,32 @@ const getCurrentUser = (req, res) => {
     });
 };
 
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((updatedUser) => {
+      if (!updatedUser) {
+        return res.status(NOT_FOUND).send({ message: "User not found." });
+      }
+      res.send(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res.status(BAD_REQUEST).send({ message: "Invalid data." });
+      }
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
+
 const login = (req, res) => {
   const jwt = require("jsonwebtoken");
   const { email, password } = req.body;
@@ -120,4 +146,11 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login, getCurrentUser };
+module.exports = {
+  getUsers,
+  createUser,
+  getUser,
+  login,
+  getCurrentUser,
+  updateUser,
+};
