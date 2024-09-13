@@ -1,5 +1,10 @@
 const ClothingItem = require("../models/clothingItem");
-const { DEFAULT, BAD_REQUEST, NOT_FOUND } = require("../utils/errors");
+const {
+  DEFAULT,
+  BAD_REQUEST,
+  NOT_FOUND,
+  FORBIDDEN,
+} = require("../utils/errors");
 
 // Return all clothing items
 const getClothingItems = (req, res) => {
@@ -34,9 +39,18 @@ const createClothingItem = (req, res) => {
 // Delete clothing item by _id
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
+  const userId = req.user._id;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
+    .then((item) => {
+      if (item.owner.toString() !== userId) {
+        const error = new Error("Forbidden: You do not have access.");
+        error.statusCode = FORBIDDEN;
+        throw error;
+      }
+      return ClothingItem.findByIdAndDelete(itemId);
+    })
     .then((item) => res.send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
