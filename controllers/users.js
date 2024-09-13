@@ -7,7 +7,7 @@ const {
   UNAUTHORIZED,
 } = require("../utils/errors");
 const bcrypt = require("bcryptjs");
-const JWT_SECRET = require("../utils/config");
+const { JWT_SECRET } = require("../utils/config");
 
 // Return all users
 const getUsers = (req, res) => {
@@ -33,9 +33,15 @@ const createUser = (req, res) => {
       return bcrypt.hash(password, 10);
     })
     .then((hash) => {
+      if (!hash) return;
+
       return User.create({ name, avatar, email, password: hash });
     })
-    .then((user) => res.send(user))
+    .then((user) => {
+      if (user) {
+        res.status(201).send(user);
+      }
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -71,8 +77,11 @@ const login = (req, res) => {
   const jwt = require("jsonwebtoken");
   const { email, password } = req.body;
 
+  console.log("Login attempt with email:", email);
+
   User.findUserByCredentials(email, password)
     .then((user) => {
+      console.log("User authenticated:", user);
       res.send({
         token: jwt.sign(
           {
@@ -86,6 +95,7 @@ const login = (req, res) => {
       });
     })
     .catch((err) => {
+      console.error("Login error:", err.message);
       res
         .status(UNAUTHORIZED)
         .send({ message: "Incorrect password or email." });
