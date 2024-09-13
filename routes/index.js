@@ -6,12 +6,12 @@ const { createUser, login } = require("../controllers/users");
 const { NOT_FOUND } = require("../utils/errors");
 const auth = require("../middlewares/auth");
 
+router.post("/signin", login);
+router.post("/signup", createUser);
+
 router.use("/users", auth, userRouter);
 
 router.use("/items", auth, itemRouter);
-
-router.post("/signin", login);
-router.post("/signup", createUser);
 
 router.use((req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });

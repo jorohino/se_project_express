@@ -3,6 +3,8 @@ const { JWT_SECRET } = require("../utils/config");
 const { UNAUTHORIZED } = require("../utils/errors");
 
 const auth = (req, res, next) => {
+  console.log("auth middleware triggered for ", req.path);
+
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
@@ -25,7 +27,7 @@ const auth = (req, res, next) => {
 
   req.user = payload;
 
-  next();
+  return next();
 };
 
 module.exports = auth;

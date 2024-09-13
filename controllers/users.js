@@ -1,3 +1,5 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const {
   DEFAULT,
@@ -6,7 +8,6 @@ const {
   CONFLICT,
   UNAUTHORIZED,
 } = require("../utils/errors");
-const bcrypt = require("bcryptjs");
 const { JWT_SECRET } = require("../utils/config");
 
 // Return all users
@@ -96,7 +97,7 @@ const getCurrentUser = (req, res) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: "User not found." });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((err) => {
       console.error(err);
@@ -119,7 +120,7 @@ const updateUser = (req, res) => {
       if (!updatedUser) {
         return res.status(NOT_FOUND).send({ message: "User not found." });
       }
-      res.send(updatedUser);
+      return res.send(updatedUser);
     })
     .catch((err) => {
       console.error(err);
@@ -133,12 +134,17 @@ const updateUser = (req, res) => {
 };
 
 const login = (req, res) => {
-  const jwt = require("jsonwebtoken");
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .send({ message: "Email and password are required." });
+  }
 
   console.log("Login attempt with email:", email);
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       console.log("User authenticated:", user);
       res.send({

@@ -53,6 +53,11 @@ const deleteClothingItem = (req, res) => {
     })
     .then((item) => res.send(item))
     .catch((err) => {
+      if (err.statusCode === FORBIDDEN) {
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "Forbidden: You do not have access." });
+      }
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: "Document not found." });
       }
