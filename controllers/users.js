@@ -73,6 +73,24 @@ const getUser = (req, res) => {
     });
 };
 
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user._id;
+
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(NOT_FOUND).send({ message: "User not found." });
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
+
 const login = (req, res) => {
   const jwt = require("jsonwebtoken");
   const { email, password } = req.body;
@@ -102,4 +120,4 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login };
+module.exports = { getUsers, createUser, getUser, login, getCurrentUser };
