@@ -21,13 +21,6 @@ app.get("/", (req, res) => {
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "66c67ae132de209311bbe4e8",
-  };
-  next();
-});
-
 app.use("/", mainRouter);
 
 new Promise((resolve, reject) => {

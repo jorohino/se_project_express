@@ -28,22 +28,37 @@ const createUser = (req, res) => {
   User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
-        return res.status(CONFLICT).send({ message: "Email already in use." });
+        const error = new Error("Email already in use.");
+        error.statusCode = CONFLICT;
+        throw error;
       }
       return bcrypt.hash(password, 10);
     })
     .then((hash) => {
-      if (!hash) return;
+      if (!hash) {
+        return res
+          .status(DEFAULT)
+          .send({ message: "Password hashing failed." });
+      }
 
       return User.create({ name, avatar, email, password: hash });
     })
     .then((user) => {
       if (user) {
-        res.status(201).send(user);
+        return res.status(201).send({
+          name: user.name,
+          avatar: user.avatar,
+          email: user.email,
+        });
       }
+      return res.status(DEFAULT).send({ message: "User creation failed." });
     })
     .catch((err) => {
       console.error(err);
+
+      if (err.statusCode === CONFLICT) {
+        return res.status(CONFLICT).send({ message: "Email already in use." });
+      }
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid data." });
       }
