@@ -40,7 +40,6 @@ const createUser = (req, res) => {
           email: user.email,
         });
       }
-      return res.status(DEFAULT).send({ message: "User creation failed." });
     })
     .catch((err) => {
       console.error(err);
