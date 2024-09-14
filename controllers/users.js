@@ -32,15 +32,11 @@ const createUser = (req, res) => {
 
       return User.create({ name, avatar, email, password: hash });
     })
-    .then((user) => {
-      if (user) {
-        return res.status(201).send({
-          name: user.name,
-          avatar: user.avatar,
-          email: user.email,
-        });
-      }
-    })
+    .then((user) => res.status(201).send({
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      }))
     .catch((err) => {
       console.error(err);
 
@@ -132,11 +128,10 @@ const login = (req, res) => {
         return res
           .status(UNAUTHORIZED)
           .send({ message: "Incorrect password or email." });
-      } else {
-        return res
-          .status(DEFAULT)
-          .send({ message: "An error has occurred on the server." });
       }
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
