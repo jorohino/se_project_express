@@ -9,7 +9,7 @@ const {
 const auth = require("../middlewares/auth");
 
 // Return all clothing items
-router.get("/", auth, getClothingItems);
+router.get("/", getClothingItems);
 
 // Create a new clothing item
 router.post("/", auth, createClothingItem);
