@@ -12,7 +12,7 @@ const { JWT_SECRET } = require("../utils/config");
 
 // Create a new user
 const createUser = (req, res) => {
-  const { name, avatar, email, password } = req.body;
+  const { username, avatar, email, password } = req.body;
 
   User.findOne({ email })
     .then((existingUser) => {
@@ -30,13 +30,15 @@ const createUser = (req, res) => {
           .send({ message: "Password hashing failed." });
       }
 
-      return User.create({ name, avatar, email, password: hash });
+      return User.create({ username, avatar, email, password: hash });
     })
-    .then((user) => res.status(201).send({
-        name: user.name,
+    .then((user) =>
+      res.status(201).send({
+        username: user.username,
         avatar: user.avatar,
         email: user.email,
-      }))
+      })
+    )
     .catch((err) => {
       console.error(err);
 
@@ -71,12 +73,12 @@ const getCurrentUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { username, avatar } = req.body;
   const userId = req.user._id;
 
   User.findByIdAndUpdate(
     userId,
-    { name, avatar },
+    { username, avatar },
     { new: true, runValidators: true }
   )
     .then((updatedUser) => {
