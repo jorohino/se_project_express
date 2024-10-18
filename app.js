@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index");
+const errorHandler = require("./middlewares/error-handler");
 
 const app = express();
 
@@ -32,3 +33,5 @@ new Promise((resolve, reject) => {
   .catch((err) => {
     console.error("Failed to start server:", err);
   });
+
+app.use(errorHandler);
