@@ -40,8 +40,8 @@ const deleteClothingItem = (req, res, next) => {
       if (item.owner.toString() !== userId) {
         return next(new ForbiddenError("Forbidden: You do not have access."));
       }
-      return ClothingItem.findByIdAndDelete(itemId).then((item) =>
-        res.send(item)
+      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) =>
+        res.send(deletedItem)
       );
     })
     .catch((err) => {
@@ -54,7 +54,7 @@ const deleteClothingItem = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid data."));
       }
-      return next(error);
+      return next(err);
     });
 };
 
@@ -76,7 +76,7 @@ const likeItem = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid data."));
       }
-      return next(error);
+      return next(err);
     });
 };
 
@@ -96,7 +96,7 @@ const dislikeItem = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid data."));
       }
-      return next(error);
+      return next(err);
     });
 };
 

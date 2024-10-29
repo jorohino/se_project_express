@@ -18,9 +18,7 @@ const createUser = (req, res, next) => {
       }
       return bcrypt.hash(password, 10);
     })
-    .then((hash) => {
-      return User.create({ username, avatar, email, password: hash });
-    })
+    .then((hash) => User.create({ username, avatar, email, password: hash }))
     .then((user) =>
       res.status(201).send({
         username: user.username,
@@ -49,9 +47,7 @@ const getCurrentUser = (req, res, next) => {
       }
       return res.send(user);
     })
-    .catch((error) => {
-      return next(error);
-    });
+    .catch((error) => next(error));
 };
 
 const updateUser = (req, res, next) => {
