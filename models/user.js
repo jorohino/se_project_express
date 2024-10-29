@@ -4,6 +4,9 @@ const bcrypt = require("bcryptjs");
 const isEmail = require("validator/lib/isEmail");
 
 const userSchema = new mongoose.Schema({
+  // Note on naming conventions: 'Username' has been utilized in the user schema and previously approved in
+  // the front-end and back-end. This prevents any confusion by avoiding overlap with the 'name' property
+  // in the clothingItem schema.
   username: {
     type: String,
     required: true,
