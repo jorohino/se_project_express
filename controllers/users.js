@@ -19,10 +19,6 @@ const createUser = (req, res, next) => {
       return bcrypt.hash(password, 10);
     })
     .then((hash) => {
-      if (!hash) {
-        return next(error);
-      }
-
       return User.create({ username, avatar, email, password: hash });
     })
     .then((user) =>
@@ -33,7 +29,7 @@ const createUser = (req, res, next) => {
       })
     )
     .catch((error) => {
-      if (error.statusCode === CONFLICT) {
+      if (error.name === "ConflictError") {
         return next(new ConflictError("Email already in use."));
       }
       if (error.name === "ValidationError") {

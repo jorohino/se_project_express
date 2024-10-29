@@ -45,7 +45,7 @@ const deleteClothingItem = (req, res, next) => {
       );
     })
     .catch((err) => {
-      if (err.name === ForbiddenError) {
+      if (err.name === "ForbiddenError") {
         return next(new ForbiddenError("Forbidden: You do not have access."));
       }
       if (err.name === "DocumentNotFoundError") {
