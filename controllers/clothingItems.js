@@ -40,11 +40,12 @@ const deleteClothingItem = (req, res, next) => {
       if (item.owner.toString() !== userId) {
         return next(new ForbiddenError("Forbidden: You do not have access."));
       }
-      return ClothingItem.findByIdAndDelete(itemId);
+      return ClothingItem.findByIdAndDelete(itemId).then((item) =>
+        res.send(item)
+      );
     })
-    .then((item) => res.send(item))
     .catch((err) => {
-      if (err.statusCode === FORBIDDEN) {
+      if (err.name === ForbiddenError) {
         return next(new ForbiddenError("Forbidden: You do not have access."));
       }
       if (err.name === "DocumentNotFoundError") {
