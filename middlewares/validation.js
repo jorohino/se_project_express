@@ -65,14 +65,14 @@ const validateExistingUser = celebrate({
   }),
 });
 
-const validateId = {
+const validateId = celebrate({
   params: Joi.object().keys({
     itemId: Joi.string().hex().length(24).required().messages({
       "string-empty": 'The "id" field must be filled in.',
       "string-length": 'The "id" field must have a length of 24.',
     }),
   }),
-};
+});
 
 const validateUpdateUser = celebrate({
   body: Joi.object().keys({

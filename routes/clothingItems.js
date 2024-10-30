@@ -13,15 +13,15 @@ const { validateNewItem, validateId } = require("../middlewares/validation");
 router.get("/", getClothingItems);
 
 // Create a new clothing item
-router.post("/", auth, createClothingItem, validateNewItem);
+router.post("/", auth, validateNewItem, createClothingItem);
 
 // Delete a clothing item by _id
-router.delete("/:itemId", auth, deleteClothingItem, validateId);
+router.delete("/:itemId", auth, validateId, deleteClothingItem);
 
 // Like item by _id
-router.put("/:itemId/likes", auth, likeItem, validateId);
+router.put("/:itemId/likes", auth, validateId, likeItem);
 
 // Dislike item by _id
-router.delete("/:itemId/likes", auth, dislikeItem, validateId);
+router.delete("/:itemId/likes", auth, validateId, dislikeItem);
 
 module.exports = router;

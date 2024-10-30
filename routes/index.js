@@ -9,8 +9,8 @@ const {
   validateExistingUser,
 } = require("../middlewares/validation");
 
-router.post("/signin", login, validateExistingUser);
-router.post("/signup", createUser, validateNewUser);
+router.post("/signin", validateExistingUser, login);
+router.post("/signup", validateNewUser, createUser);
 
 router.use("/users", userRouter);
 
